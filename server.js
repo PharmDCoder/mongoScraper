@@ -66,9 +66,16 @@ app.get("/scrape", function(req, res) {
     });
 
     // Send a message to the client
-    res.send("Scrape Complete");
+    res.json(response.data);
   });
 });
+
+//Remove Articles
+app.delete('/clear', function (req, res) {
+  // res.send('Got a DELETE request at /user')
+  db.Article.remove({}, function(error, removed) {
+  });
+})
 
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
