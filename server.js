@@ -29,7 +29,7 @@ app.use(express.static("public"));
 
 // Connect to the Mongo DB
 // mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
-mongoose.connect(MOGODB_URI);
+mongoose.connect("MONGODB_URI", { useUnifiedTopology: true, useNewUrlParser: true });
 
 // Routes
 
