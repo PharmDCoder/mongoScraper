@@ -97,6 +97,14 @@ app.delete("/deleteSaved/:id", function(req, res) {
   });
 });
 
+app.delete("/deleteNote/:id", function(req, res) {
+  // We just have to specify which todo we want to destroy with "where"
+  db.Note.findByIdAndRemove(req.params.id, function (error, removed) {
+  }).then(function(dbNote) {
+    res.json(dbNote);
+  });
+});
+
 // Route for getting all Articles from the db
 app.get("/articles", function (req, res) {
   // Grab every document in the Articles collection
@@ -110,6 +118,20 @@ app.get("/articles", function (req, res) {
       res.json(err);
     });
 });
+
+// Route for getting all Notes from the db
+// app.get("/notes", function (req, res) {
+//   // Grab every document in the Articles collection
+//   db.Note.find({})
+//     .then(function (dbNote) {
+//       // If we were able to successfully find Articles, send them back to the client
+//       res.json(dbNote);
+//     })
+//     .catch(function (err) {
+//       // If an error occurred, send it to the client
+//       res.json(err);
+//     });
+// });
 
 // Route for getting all Articles from the db
 app.get("/saved", function (req, res) {
@@ -155,7 +177,7 @@ app.post("/articles/:id", function (req, res) {
       // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
       // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return db.Saved.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      return db.Saved.findOneAndUpdate({ _id: req.params.id }, { $push: { note: dbNote._id } }, { new: true });
     })
     .then(function (dbSaved) {
       // If we were able to successfully update an Article, send it back to the client
