@@ -22,13 +22,24 @@ $(".clear").on("click", () => {
 $.getJSON("/getSaved", function (data) {
     // For each one
     for (var i = 0; i < data.length; i++) {
-
-        var newDiv = $("<div>");
-        newDiv.append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "<br />" + data[i].date + "</p>");
-        newDiv.append("<button class='btn btn-danger delete-click' data-id='" + data[i]._id + "'>Delete</button>")
-        newDiv.append("<button class='btn btn-primary note-click' data-id='" + data[i]._id + "'>Add Notes</button>")
+        var newDiv = $("<div class='card align-top col-md-3 col-sm-12' style='display:inline-block;'>");
+        newDiv.append("<img src='" + data[i].image + "' class='card-img-top'>");
+        newDiv.append("<div class='card-body'></div>");
+        newDiv.append("<h5 data-id='" + data[i]._id + "' class='card-title text-center'>" + data[i].title + "</h5>");
+        newDiv.append("<p class='card-text'>" + data[i].date + "</p >");
+        newDiv.append("<a href='" + data[i].link + "' class='btn btn-success'>View Article</a>");
+        newDiv.append("<button class='btn btn-danger delete-click' data-id='" + data[i]._id + "'>Delete</button>");
+        newDiv.append("<button class='btn btn-primary note-click' data-id='" + data[i]._id + "'>Add Notes</button>");
         // Display the apropos information on the page
-        $("#articles").append(newDiv);
+        $("#articles").append(newDiv)
+
+        // var newDiv = $("<div>");
+        // newDiv.append("<img src='" + data[i].image + "'>");
+        // newDiv.append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "<br />" + data[i].date + "</p>");
+        // newDiv.append("<button class='btn btn-danger delete-click' data-id='" + data[i]._id + "'>Delete</button>")
+        // newDiv.append("<button class='btn btn-primary note-click' data-id='" + data[i]._id + "'>Add Notes</button>")
+        // // Display the apropos information on the page
+        // $("#articles").append(newDiv);
     }
 });
 
@@ -62,22 +73,24 @@ $(document).on("click", ".note-click", function () {
         .then(function (data) {
             // console.log("/n LOOK HERE!! /n" +JSON.stringify(data));
             // The title of the article
-            $("#notes").append("<h2>" + data.title + "</h2>");
+            $(".modal").modal("toggle");
+            $(".modal-title").text(data.title);
             data.note.forEach((element, i) => {
                 var newDiv2 = $("<div>");
                 newDiv2.append("<h3>" + data.note[i].title + "</h2>");
                 newDiv2.append("<h5>" + data.note[i].body + "</h5>");
                 newDiv2.append("<button class='btn btn-primary note-delete' data-id='" + data.note[i]._id + "'>Delete Note</button>")
+                newDiv2.append("<hr>")
                 // Display the apropos information on the page
                 $("#notes").append(newDiv2);
             });
             // console.log("first note title" + data.note[0].title + "  " + "first note body" + data.note[0].body);
             // An input to enter a new title
-            $("#notes").append("<input id='titleinput' name='title' >");
+            $("#notes").append("<input class='form-control' id='titleinput' name='title' placeholder='Note Title'>");
             // A textarea to add a new note body
-            $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+            $("#notes").append("<textarea id='bodyinput' class='form-control' name='body' placeholder='Add Notes Here'></textarea>");
             // A button to submit a new note, with the id of the article saved to it
-            $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+            $(".modal-footer").append("<button class='btn btn-danger' data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
             // If there's a note in the article
             if (data.note) {
@@ -125,7 +138,8 @@ $(document).on("click", "#savenote", function () {
             // Log the response
             console.log(data);
             // Empty the notes section
-            $("#notes").empty();
+            // $("#notes").empty();
+            $(".modal").modal("toggle");
         });
 
     // Also, remove the values entered in the input and textarea for note entry

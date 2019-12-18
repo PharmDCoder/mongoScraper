@@ -20,7 +20,11 @@ var ArticleSchema = new Schema({
   },
   date: {
     type: String,
-    required: false
+    required: true
+  },
+  image: {
+    type: String,
+    required: true
   }
 
 });

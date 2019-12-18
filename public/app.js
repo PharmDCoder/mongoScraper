@@ -3,7 +3,6 @@ $(".scrape").on("click", () => {
   }).then(() => {
     window.location.href = "/";
   })
-
 })
 
 $(".clear").on("click", () => {
@@ -27,10 +26,14 @@ $.getJSON("/articles", function (data) {
   }).then(() => {
     for (var i = 0; i < data.length; i++) {
       if ((titlesArr.indexOf(data[i].title.replace("'", "")) === -1)) {
-        var newDiv = $("<div>");
-        newDiv.append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "<br />" + data[i].date + "</p>");
+        var newDiv = $("<div class='card align-top col-md-3 col-sm-12' style='display:inline-block;'>");
+        newDiv.append("<img src='" + data[i].image + "' class='card-img-top'>");
+        newDiv.append("<div class='card-body'></div>");
+        newDiv.append("<h5 data-id='" + data[i]._id + "' class='card-title text-center'>" + data[i].title + "</h5>");
+        newDiv.append("<p class='card-text'>" + data[i].date + "</p >");
+        newDiv.append("<a href='" + data[i].link + "' class='btn btn-success'>View Article</a>");
         newDiv.append("<button class='btn btn-primary save-click' data-title='" + data[i].title.replace("'", "") + "' data-link='"
-          + data[i].link + "' data-date='" + data[i].date + "'>Save</button>")
+          + data[i].link + "' data-date='" + data[i].date + "' data-image='" + data[i].image + "'>Save</button>")
         // Display the apropos information on the page
         $("#articles").append(newDiv);
       }
@@ -40,13 +43,14 @@ $.getJSON("/articles", function (data) {
 });
 
 $(document).on("click", ".save-click", function () {
-
+  console.log("save button clicked");
   var result = {};
 
   // Add the text and href of every link, and save them as properties of the result object
   result.title = $(this).data("title");
   result.link = $(this).data("link");
   result.date = $(this).data("date");
+  result.image = $(this).data("image");
   $(this).parent().hide();
   $.post("/save-article", result, function (req, res) {
   }).then(() => {

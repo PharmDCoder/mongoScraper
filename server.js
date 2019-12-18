@@ -49,6 +49,7 @@ app.get("/scrape", function (req, res) {
       result.title = $(this).children("a").text().replace("'", "");
       result.link = $(this).children("a").attr("href");
       result.date = $(this).parent().children("div:last-child").text();
+      result.image = $(this).parent().children("div").children("a").children("img").data("src");
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
