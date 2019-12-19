@@ -1,28 +1,15 @@
+//When home button is clicked re-routes to root page
 $(".home-button").on("click", () => {
     window.location.href = "/";
 })
 
-$(".scrape").on("click", () => {
-    $.getJSON("/scrape", function (req, res) {
-    }).then(() => {
-        window.location.href = "/";
-    })
-
-})
-
-$(".clear").on("click", () => {
-    $.ajax({
-        url: "/clear",
-        type: 'DELETE'
-    })
-    $("#articles").empty();
-})
-
-// Grab the articles as a json
+// Grab the saved articles as a json
 $.getJSON("/getSaved", function (data) {
-    // For each one
+    // Loops through the saved article json
     for (var i = 0; i < data.length; i++) {
+        //creating a new div to store dynamically generated html code
         var newDiv = $("<div class='card align-top col-md-3 col-sm-12' style='display:inline-block;'>");
+        //appending new html elements
         newDiv.append("<img src='" + data[i].image + "' class='card-img-top'>");
         newDiv.append("<div class='card-body'></div>");
         newDiv.append("<h5 data-id='" + data[i]._id + "' class='card-title text-center'>" + data[i].title + "</h5>");
@@ -30,38 +17,34 @@ $.getJSON("/getSaved", function (data) {
         newDiv.append("<a href='" + data[i].link + "' class='btn btn-success'>View Article</a>");
         newDiv.append("<button class='btn btn-danger delete-click' data-id='" + data[i]._id + "'>Delete</button>");
         newDiv.append("<button class='btn btn-primary note-click' data-id='" + data[i]._id + "'>Add Notes</button>");
-        // Display the apropos information on the page
+        // Apending new HTML elements to existing tag on the DOM
         $("#articles").append(newDiv)
-
-        // var newDiv = $("<div>");
-        // newDiv.append("<img src='" + data[i].image + "'>");
-        // newDiv.append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "<br />" + data[i].date + "</p>");
-        // newDiv.append("<button class='btn btn-danger delete-click' data-id='" + data[i]._id + "'>Delete</button>")
-        // newDiv.append("<button class='btn btn-primary note-click' data-id='" + data[i]._id + "'>Add Notes</button>")
-        // // Display the apropos information on the page
-        // $("#articles").append(newDiv);
     }
 });
 
+//Deletes article when clicked
 $(document).on("click", ".delete-click", function () {
 
-    var deleteId = $(this).data("id");;
-
+    // var deleteId = $(this).data("id");;
+    //hides article from DOM
     $(this).parent().hide();
+    //sets id = to the data id of the button
     var id = $(this).data("id");
+    //dumping data from DB
     $.ajax({
         method: "DELETE",
         url: "/deleteSaved/" + id
+    //reloads page after delete
     }).then(() => {
         window.location.href = "/saved";
     });
 });
 
-// Whenever someone clicks a p tag
+// Whenever someone clicks "Add Note Button"
 $(document).on("click", ".note-click", function () {
     // Empty the notes from the note section
     $("#notes").empty();
-    // Save the id from the p tag
+    // Save the id from the save note button
     var thisId = $(this).attr("data-id");
 
     // Now make an ajax call for the Article
@@ -72,8 +55,9 @@ $(document).on("click", ".note-click", function () {
         // With that done, add the note information to the page
         .then(function (data) {
             // console.log("/n LOOK HERE!! /n" +JSON.stringify(data));
-            // The title of the article
+            // Making modal for the note section to pop up
             $(".modal").modal("toggle");
+            //Dynamically generates HTML to modal
             $(".modal-title").text(data.title);
             data.note.forEach((element, i) => {
                 var newDiv2 = $("<div>");
@@ -105,9 +89,10 @@ $(document).on("click", ".note-click", function () {
 //deleting note
 $(document).on("click", ".note-delete", function () {
 
-    var deleteId = $(this).data("id");;
-
+    // var deleteId = $(this).data("id");;
+    //hides deleted note from the DOM
     $(this).parent().hide();
+    //sets variable "id" = the id of the note button
     var id = $(this).data("id");
     $.ajax({
         method: "DELETE",

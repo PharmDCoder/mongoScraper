@@ -10,18 +10,18 @@ var SavedSchema = new Schema({
   title: {
     type: String,
     required: true,
-    // unique: true
   },
   // `link` is required and of type String
   link: {
     type: String,
     required: true,
-    // unique: true
   },
+  // `date` is required and of type String
   date: {
     type: String,
     required: true,
   },
+  // `image` is required and of type String
   image: {
     type: String,
     required: true
